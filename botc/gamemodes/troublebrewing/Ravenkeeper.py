@@ -4,6 +4,7 @@ import json
 import discord
 import random
 import datetime
+import configparser
 from botc import Action, ActionTypes, Townsfolk, Character, NonRecurringAction, \
     RavenkeeperActivated, StatusList, BOTCUtils, Minion, Demon, Outsider
 from botc.BOTCUtils import GameLogic
@@ -22,6 +23,10 @@ with open('botc/game_text.json') as json_file:
     copyrights_str = strings["misc"]["copyrights"]
     ravenkeeper_reply = strings["gameplay"]["ravenkeeper_reply"]
 
+Config = configparser.ConfigParser()
+Config.read('config.INI')
+
+DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 
 class Ravenkeeper(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     """Ravenkeeper: If you die at night, you are woken to choose a player: you learn their character.
@@ -97,6 +102,9 @@ class Ravenkeeper(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         ability is activated. Otherwise send nothing.
         """
 
+        if DISABLE_DMS:
+            return
+
         if player.has_status_effect(StatusList.ravenkeeper_activated):
 
             recipient = player.user
@@ -122,6 +130,9 @@ class Ravenkeeper(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         
     async def exec_learn(self, ravenkeeper_player, learn_player):
         """Execute the learn command (dawn ability interaction)"""
+
+        if DISABLE_DMS:
+            return
 
         # Correct info
         if not ravenkeeper_player.is_droisoned():
@@ -172,6 +183,10 @@ class Ravenkeeper(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         assert len(targets) == 1, "Received a number of targets different than 1 for ravenkeeper 'learn'"
         action = Action(player, targets, ActionTypes.learn, globvars.master_state.game._chrono.phase_id)
         player.action_grid.register_an_action(action, globvars.master_state.game._chrono.phase_id)
+
+        if DISABLE_DMS:
+            return
+
         msg = butterfly + " " + character_text["feedback"].format(targets[0].game_nametag)
         await player.user.send(msg)
     

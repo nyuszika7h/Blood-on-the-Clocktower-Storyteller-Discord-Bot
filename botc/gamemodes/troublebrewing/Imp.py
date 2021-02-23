@@ -13,12 +13,17 @@ from botc.BOTCUtils import GameLogic, BOTCUtils
 from ._utils import TroubleBrewing, TBRole
 import globvars
 
-Config = configparser.ConfigParser()
+Preferences = configparser.ConfigParser()
 
-Config.read("preferences.INI")
+Preferences.read("preferences.INI")
 
-DEMON_COLOR = Config["colors"]["DEMON_COLOR"]
+DEMON_COLOR = Preferences["colors"]["DEMON_COLOR"]
 DEMON_COLOR = int(DEMON_COLOR, 16)
+
+Config = configparser.ConfigParser()
+Config.read('config.INI')
+
+DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
     character_text = json.load(json_file)[TBRole.imp.value.lower()]
@@ -163,6 +168,10 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
         assert len(targets) == 1, "Received a number of targets different than 1 for imp 'kill'"
         action = Action(player, targets, ActionTypes.kill, globvars.master_state.game._chrono.phase_id)
         player.action_grid.register_an_action(action, globvars.master_state.game._chrono.phase_id)
+
+        if DISABLE_DMS:
+            return
+
         # Normal kill
         if player.user.id != targets[0].user.id:
             msg = butterfly + " " + character_text["feedback"][0].format(targets[0].game_nametag)
@@ -200,6 +209,10 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
                     promoted = random.choice(alive_scarletwomen)
                     promoted._old_role_obj = promoted._role_obj
                     await promoted.exec_change_role(Imp())
+
+                    if DISABLE_DMS:
+                        return
+
                     embed = self.__make_demonhood_promo_embed(promoted)
                     try:
                         await promoted.user.send(embed = embed)
@@ -218,6 +231,10 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
                 promoted = random.choice(alive_minions)
                 promoted._old_role_obj = promoted._role_obj
                 await promoted.exec_change_role(Imp())
+
+                if DISABLE_DMS:
+                    return
+
                 embed = self.__make_demonhood_promo_embed(promoted)
                 try:
                     await promoted.user.send(embed = embed)
@@ -255,6 +272,10 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
                         promoted = random.choice(alive_scarletwomen)
                         promoted._old_role_obj = promoted._role_obj
                         await promoted.exec_change_role(Imp())
+
+                        if DISABLE_DMS:
+                            return
+
                         embed = self.__make_demonhood_promo_embed(promoted)
                         try:
                             await promoted.user.send(embed = embed)
@@ -305,6 +326,10 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
                 if player.is_alive():
                     killed_player = BOTCUtils.get_random_player_excluding(player)
                     await self.exec_kill(player, killed_player)
+
+                    if DISABLE_DMS:
+                        return
+
                     msg = botutils.BotEmoji.butterfly
                     msg += " "
                     msg += action_assign.format(killed_player.game_nametag)

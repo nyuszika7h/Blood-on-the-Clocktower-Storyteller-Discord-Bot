@@ -4,6 +4,7 @@ import json
 import discord
 import datetime
 import random
+import configparser
 from botc import Townsfolk, Character, BOTCUtils, NonRecurringAction
 from ._utils import TroubleBrewing, TBRole
 import globvars
@@ -16,6 +17,10 @@ with open('botc/game_text.json') as json_file:
     chef_init = strings["gameplay"]["chef_init"]
     copyrights_str = strings["misc"]["copyrights"]
 
+Config = configparser.ConfigParser()
+Config.read('config.INI')
+
+DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 
 class Chef(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     """Chef: You start knowing how many pairs of evil players there are.
@@ -92,6 +97,9 @@ class Chef(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     
     async def send_n1_end_message(self, recipient):
         """Send the number of pairs of evils sitting together."""
+
+        if DISABLE_DMS:
+            return
 
         from botc.BOTCUtils import get_number_image
 

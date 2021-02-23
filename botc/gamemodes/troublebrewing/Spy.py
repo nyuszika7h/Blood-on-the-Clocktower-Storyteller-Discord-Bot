@@ -12,11 +12,16 @@ from ._utils import TroubleBrewing, TBRole
 from discord.ext import tasks
 import globvars
 
-Config = configparser.ConfigParser()
-Config.read("preferences.INI")
+Preferences = configparser.ConfigParser()
+Preferences.read("preferences.INI")
 
-GRIMOIRE_SHOW_TIME = Config["botc"]["GRIMOIRE_SHOW_TIME"]
+GRIMOIRE_SHOW_TIME = Preferences["botc"]["GRIMOIRE_SHOW_TIME"]
 GRIMOIRE_SHOW_TIME = int(GRIMOIRE_SHOW_TIME)
+
+Config = configparser.ConfigParser()
+Config.read('config.INI')
+
+DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
     character_text = json.load(json_file)[TBRole.spy.value.lower()]
@@ -110,6 +115,9 @@ class Spy(Minion, TroubleBrewing, Character, NonRecurringAction):
         
     async def __send_grimoire(self, recipient):
         """Send the spy grimoire"""
+
+        if DISABLE_DMS:
+            return
 
         from botc import Grimoire
         try: 

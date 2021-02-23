@@ -4,6 +4,7 @@ import json
 import random
 import discord 
 import datetime
+import configparser
 from botc import Action, ActionTypes, Townsfolk, Character, Storyteller, RedHerring, \
     RecurringAction, Category, StatusList
 from botc.BOTCUtils import GameLogic
@@ -26,6 +27,10 @@ with open('botc/game_text.json') as json_file:
     good_link = strings["images"]["good"]
     evil_link = strings["images"]["evil"]
 
+Config = configparser.ConfigParser()
+Config.read('config.INI')
+
+DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 
 class FortuneTeller(Townsfolk, TroubleBrewing, Character, RecurringAction):
     """Fortune Teller: Each night, choose 2 players: you learn if either is a Demon. 
@@ -125,11 +130,18 @@ class FortuneTeller(Townsfolk, TroubleBrewing, Character, RecurringAction):
         assert len(targets) == 2, "Received a number of targets different than 2 for fortune teller 'read'"
         action = Action(player, targets, ActionTypes.read, globvars.master_state.game._chrono.phase_id)
         player.action_grid.register_an_action(action, globvars.master_state.game._chrono.phase_id)
+
+        if DISABLE_DMS:
+            return
+
         msg = butterfly + " " + character_text["feedback"].format(targets[0].game_nametag, targets[1].game_nametag)
         await player.user.send(msg)
     
     async def exec_read(self, fortune_teller_player, read_player_1, read_player_2):
         """Execute the read action (night ability interaction)"""
+
+        if DISABLE_DMS:
+            return
 
         if fortune_teller_player.is_alive():
             # Correct info

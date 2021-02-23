@@ -4,6 +4,7 @@ import json
 import discord
 import random
 import datetime
+import configparser
 from botc import Townsfolk, Character, Category, NonRecurringAction, BOTCUtils
 from ._utils import TroubleBrewing, TBRole
 import globvars
@@ -16,6 +17,10 @@ with open('botc/game_text.json') as json_file:
     washerwoman_init = strings["gameplay"]["washerwoman_init"]
     copyrights_str = strings["misc"]["copyrights"]
 
+Config = configparser.ConfigParser()
+Config.read('config.INI')
+
+DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 
 class Washerwoman(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     """Washerwoman: You start knowing 1 of 2 players is a particular Townsfolk.
@@ -80,6 +85,9 @@ class Washerwoman(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     
     async def send_n1_end_message(self, recipient):
         """Send two possible players for a particular townsfolk character."""
+
+        if DISABLE_DMS:
+            return
 
         player = BOTCUtils.get_player_from_id(recipient.id)
 
