@@ -246,5 +246,15 @@
             "You have decided to **starpass** tonight."
         ],
         "brief" : "The Imp kills a player each night, and can make copies of itself... for a terrible price."
-    }
+    },
+    
+     "scapegoat" : {
+        "lore" : "Good evening! Thank you for inviting me to the ball. I'm not from around here, but you sure seem like a friendly bunch, by golly. I'm sure we'll get along just dandy. What's all that rope for?", 
+        "description" : "If a player of your alignment is executed, you might be executed instead.",
+        "examples" : "- The Fortune Teller is about to be executed, but the Storyteller chooses to execute the good Scapegoat instead. The Fortune Teller lives and the Scapegoat dies. That night, the Undertaker learns that a Scapegoat was executed today. \n- The Poisoner is about to be executed, but the Storyteller chooses to execute the evil Scapegoat instead. The Storyteller could have let the Poisoner die as normal, but chose not to. \n - The Spy is about to be executed. The good Scapegoat dies instead (as the spy was registering as good).",
+        "instruction" : "If one of your teammates is executed, you might die instead.",
+        "n1_addendum" : "You will receive this information at the end of the first night. No further action is required from you for now.",
+        "action" : "",
+        "feedback" : "",
+        "brief" : "The Scapegoat can sometime inadvertedly protect their own teammates, at the price of their own life."
 }
