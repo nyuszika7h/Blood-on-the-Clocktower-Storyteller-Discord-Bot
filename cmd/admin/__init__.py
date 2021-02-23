@@ -6,6 +6,7 @@ from .fjoin import Fjoin
 from .fleave import Fleave
 from .playtest import Playtest
 from .frestart import Frestart
+from .update import Update
 
 def setup(client):
     client.add_cog(Ignore(client))
@@ -16,3 +17,4 @@ def setup(client):
     client.add_cog(Fleave(client))
     client.add_cog(Playtest(client))
     client.add_cog(Frestart(client))
+    client.add_cog(Update(client))

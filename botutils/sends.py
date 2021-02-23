@@ -45,7 +45,7 @@ def __create_python_code_block(message):
     return f"```python\n{message}```"
 
 
-def __create_code_block(message):
+def create_code_block(message):
     """Create a code block"""
     return f"```\n{message}```"
 
@@ -58,7 +58,7 @@ async def send_pregame_stats(ctx, id_list):
         member = globvars.client.get_guild(SERVER_ID).get_member(int(userid))
         name = member.display_name
         temp += f"{name} ({userid})\n"
-    temp = __create_code_block(temp)
+    temp = create_code_block(temp)
     msg += temp
     await ctx.send(msg)
 

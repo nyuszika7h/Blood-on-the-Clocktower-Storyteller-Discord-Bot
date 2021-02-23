@@ -54,7 +54,8 @@
         "top_footer_winrate": "Players with at least {} game{}",
         "top_usage": "Argument must be one of `games`, `wins` or `winrate`.",
         "frestart": "{} {} Restarting",
-        "frestart_confirm": "{} {} A game is currently in progress. If you still want to restart the bot, please use `!frestart --force`."
+        "frestart_confirm": "{} {} A game is currently in progress. If you still want to restart the bot, please use `!frestart --force`.",
+        "update_exitcode": ":x: Process exited with return code {}"
 
     },
 
@@ -370,6 +371,16 @@
                 "outputs": [],
                 "weights": []
             }
+
+        },
+
+        "update" : {
+
+              "brief": "update and restart the bot",
+              "help": "Update and restart the bot.",
+              "description": "[FRESTART] command",
+              "outputs": [],
+              "weights": []
 
         }
 
