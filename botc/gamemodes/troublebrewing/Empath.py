@@ -4,6 +4,7 @@ import json
 import discord
 import datetime
 import random
+import configparser
 from botc import Townsfolk, Character, BOTCUtils, NonRecurringAction
 from ._utils import TroubleBrewing, TBRole
 
@@ -15,6 +16,10 @@ with open('botc/game_text.json') as json_file:
     empath_nightly = strings["gameplay"]["empath_nightly"]
     copyrights_str = strings["misc"]["copyrights"]
 
+Config = configparser.ConfigParser()
+Config.read('config.INI')
+
+DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 
 class Empath(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     """Empath: Each night, you learn how many of your 2 alive neighbors are evil.
@@ -90,6 +95,9 @@ class Empath(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     
     async def send_n1_end_message(self, recipient):
         """Send the number of pairs of evils sitting together."""
+
+        if DISABLE_DMS:
+            return
 
         from botc.BOTCUtils import get_number_image
 

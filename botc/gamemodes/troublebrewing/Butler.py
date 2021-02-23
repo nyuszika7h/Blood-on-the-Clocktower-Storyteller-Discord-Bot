@@ -3,6 +3,7 @@
 import json 
 import botutils
 import discord
+import configparser
 from botc.BOTCUtils import GameLogic
 from botc import Outsider, Character, Action, ActionTypes, BOTCUtils, RecurringAction, \
     ButlerService
@@ -20,6 +21,10 @@ with open('botc/game_text.json') as json_file:
     documentation = json.load(json_file)
     action_assign = documentation["gameplay"]["action_assign"]
 
+Config = configparser.ConfigParser()
+Config.read('config.INI')
+
+DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 
 class Butler(Outsider, TroubleBrewing, Character, RecurringAction):
     """Butler: Each night, choose a player (not yourself): tomorrow, you may only vote if 
@@ -109,6 +114,10 @@ class Butler(Outsider, TroubleBrewing, Character, RecurringAction):
         assert len(targets) == 1, "Received a number of targets different than 1 for butler 'serve'"
         action = Action(player, targets, ActionTypes.serve, globvars.master_state.game._chrono.phase_id)
         player.action_grid.register_an_action(action, globvars.master_state.game._chrono.phase_id)
+
+        if DISABLE_DMS:
+            return
+
         msg = butterfly + " " + character_text["feedback"].format(targets[0].game_nametag)
         await player.user.send(msg)
     
@@ -140,6 +149,10 @@ class Butler(Outsider, TroubleBrewing, Character, RecurringAction):
             else:
                 master_player = BOTCUtils.get_random_player_excluding(player)
                 await self.exec_serve(player, master_player)
+
+                if DISABLE_DMS:
+                    return
+
                 msg = botutils.BotEmoji.butterfly
                 msg += " "
                 msg += action_assign.format(master_player.game_nametag)

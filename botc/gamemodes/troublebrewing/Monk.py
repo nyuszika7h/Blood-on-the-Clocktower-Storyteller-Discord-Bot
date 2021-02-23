@@ -2,6 +2,7 @@
 
 import json 
 import discord
+import configparser
 from botc import Action, ActionTypes, Townsfolk, Character, SafetyFromDemon, RecurringAction
 from botc.BOTCUtils import GameLogic
 from ._utils import TroubleBrewing, TBRole
@@ -14,6 +15,10 @@ with open('botutils/bot_text.json') as json_file:
     bot_text = json.load(json_file)
     butterfly = bot_text["esthetics"]["butterfly"]
 
+Config = configparser.ConfigParser()
+Config.read('config.INI')
+
+DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 
 class Monk(Townsfolk, TroubleBrewing, Character, RecurringAction):
     """Monk: Each night*, choose a player (not yourself): they are safe from the Demon tonight.
@@ -99,6 +104,10 @@ class Monk(Townsfolk, TroubleBrewing, Character, RecurringAction):
         assert len(targets) == 1, "Received a number of targets different than 1 for monk 'protect'"
         action = Action(player, targets, ActionTypes.protect, globvars.master_state.game._chrono.phase_id)
         player.action_grid.register_an_action(action, globvars.master_state.game._chrono.phase_id)
+
+        if DISABLE_DMS:
+            return
+
         msg = butterfly + " " + character_text["feedback"].format(targets[0].game_nametag)
         await player.user.send(msg)
     

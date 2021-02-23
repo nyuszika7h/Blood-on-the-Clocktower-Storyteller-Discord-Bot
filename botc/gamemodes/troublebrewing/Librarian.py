@@ -4,6 +4,7 @@ import json
 import discord
 import random
 import datetime
+import configparser
 from botc import Townsfolk, Character, Category, NonRecurringAction, BOTCUtils, \
     Outsider
 from ._utils import TroubleBrewing, TBRole
@@ -19,6 +20,10 @@ with open('botc/game_text.json') as json_file:
     copyrights_str = strings["misc"]["copyrights"]
     blank_token = strings["images"]["blank_token"]
 
+Config = configparser.ConfigParser()
+Config.read('config.INI')
+
+DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 
 class Librarian(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     """Librarian: You start knowing that 1 of 2 players is a particular Outsider.
@@ -84,6 +89,9 @@ class Librarian(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     
     async def send_n1_end_message(self, recipient):
         """Send two possible players for a particular outsider character."""
+
+        if DISABLE_DMS:
+            return
 
         player = BOTCUtils.get_player_from_id(recipient.id)
 

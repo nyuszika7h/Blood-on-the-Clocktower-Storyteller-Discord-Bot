@@ -4,6 +4,7 @@ import discord
 import datetime
 import json 
 import random
+import configparser
 from botc import Townsfolk, Character, NonRecurringAction, BOTCUtils, Townsfolk, \
     Outsider, Minion, Demon
 from ._utils import TroubleBrewing, TBRole
@@ -17,6 +18,10 @@ with open('botc/game_text.json') as json_file:
     undertaker_none = strings["gameplay"]["undertaker_none"]
     copyrights_str = strings["misc"]["copyrights"]
 
+Config = configparser.ConfigParser()
+Config.read('config.INI')
+
+DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 
 class Undertaker(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     """Undertaker: Each night, you learn which character died by execution today.
@@ -120,6 +125,9 @@ class Undertaker(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     
     async def send_regular_night_end_dm(self, recipient):
         """Send the character of the executed player today."""
+
+        if DISABLE_DMS:
+            return
 
         player = BOTCUtils.get_player_from_id(recipient.id)
 

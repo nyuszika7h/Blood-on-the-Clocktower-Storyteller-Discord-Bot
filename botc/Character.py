@@ -14,22 +14,24 @@ from .abilities import ActionTypes, Action
 from .BOTCUtils import GameLogic
 import globvars
 
-Config = configparser.ConfigParser()
+Preferences = configparser.ConfigParser()
 
-Config.read("preferences.INI")
+Preferences.read("preferences.INI")
 
-TOWNSFOLK_COLOR = Config["colors"]["TOWNSFOLK_COLOR"]
-OUTSIDER_COLOR = Config["colors"]["OUTSIDER_COLOR"]
-MINION_COLOR = Config["colors"]["MINION_COLOR"]
-DEMON_COLOR = Config["colors"]["DEMON_COLOR"]
+TOWNSFOLK_COLOR = Preferences["colors"]["TOWNSFOLK_COLOR"]
+OUTSIDER_COLOR = Preferences["colors"]["OUTSIDER_COLOR"]
+MINION_COLOR = Preferences["colors"]["MINION_COLOR"]
+DEMON_COLOR = Preferences["colors"]["DEMON_COLOR"]
 
 TOWNSFOLK_COLOR = int(TOWNSFOLK_COLOR, 16)
 OUTSIDER_COLOR = int(OUTSIDER_COLOR, 16)
 MINION_COLOR = int(MINION_COLOR, 16)
 DEMON_COLOR = int(DEMON_COLOR, 16)
 
-Config.read("config.INI")
+Config = configparser.ConfigParser()
+Config.read('config.INI')
 
+DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 PREFIX = Config["settings"]["PREFIX"]
 
 with open('botc/game_text.json') as json_file: 
@@ -206,6 +208,9 @@ class Character:
     async def send_role_card_embed(self, ctx):
         """Create the role card embed object and return it"""
 
+        if DISABLE_DMS:
+            return
+
         def make_embed(emote,
                        role_name, 
                        role_category, 
@@ -282,6 +287,9 @@ class Character:
     
     async def send_opening_dm_embed(self, recipient):
         """Create the opening DM (on game start) embed object and return it"""
+
+        if DISABLE_DMS:
+            return
 
         if self.ego_self.category == Category.townsfolk:
             color = TOWNSFOLK_COLOR  

@@ -3,12 +3,18 @@
 import json 
 import random
 import discord
+import configparser
 from botc import BOTCUtils, Townsfolk, Outsider, Minion, Character, NonRecurringAction
 from ._utils import TroubleBrewing, TBRole
 import globvars
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
     character_text = json.load(json_file)[TBRole.scarletwoman.value.lower()]
+
+Config = configparser.ConfigParser()
+Config.read('config.INI')
+
+DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 
 class ScarletWoman(Minion, TroubleBrewing, Character, NonRecurringAction):
     """Scarlet Woman: If there are 5 or more players alive & the Demon dies, you become the Demon.
@@ -76,6 +82,10 @@ class ScarletWoman(Minion, TroubleBrewing, Character, NonRecurringAction):
         """Send demon and minion list if there are 7 or more players. 
         Otherwise, send the default instruction string.
         """
+
+        if DISABLE_DMS:
+            return
+
         # Seven or more players, send the evil list
         if globvars.master_state.game.nb_players >= 7:
             msg1 = globvars.master_state.game.setup.create_evil_team_string()

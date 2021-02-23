@@ -4,6 +4,7 @@ import json
 import random
 import datetime
 import discord
+import configparser
 from botc import Townsfolk, Character, Category, NonRecurringAction, BOTCUtils, \
     Minion
 from ._utils import TroubleBrewing, TBRole
@@ -17,6 +18,10 @@ with open('botc/game_text.json') as json_file:
     investigator_init = strings["gameplay"]["investigator_init"]
     copyrights_str = strings["misc"]["copyrights"]
 
+Config = configparser.ConfigParser()
+Config.read('config.INI')
+
+DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 
 class Investigator(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     """Investigator: You start knowing 1 of 2 players is a particular Minion.
@@ -83,6 +88,9 @@ class Investigator(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         """Send two possible players for a particular minion character."""
 
         player = BOTCUtils.get_player_from_id(recipient.id)
+
+        if DISABLE_DMS:
+            return
 
         # Dead players do not receive anything
         if not player.is_alive():
