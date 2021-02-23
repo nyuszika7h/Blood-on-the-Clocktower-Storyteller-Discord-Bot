@@ -53,6 +53,8 @@ Config.read("config.INI")
 SERVER_ID = Config["user"]["SERVER_ID"]
 SERVER_ID = int(SERVER_ID)
 
+DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
+
 CONFLICTING_CMDS = [
 
    "cmd.gameplay"
@@ -212,6 +214,13 @@ class Game(GameMeta):
         self.gameloop = master_game_loop
         self.winners = None  # botc.Team object
         self.invalidated = False  # Don't count in win rates due to modkill/frole/player leaving guild
+
+        if DISABLE_DMS:
+            # Also don't count game in win rates if dms are disabled.
+            # This shouldn't be a problem considering DISABLE_DMS is a testing flag,
+            # but it would be unfair to count the game if the players do not know what
+            # character they are or when to act.
+            self.invalidated = True
 
         # Temporary day data
         self.chopping_block = None  # ChoppingBlock object
