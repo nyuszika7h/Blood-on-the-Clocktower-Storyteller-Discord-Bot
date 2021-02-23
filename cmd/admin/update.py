@@ -44,7 +44,6 @@ class Update(commands.Cog, name = language["system"]["admin_cog"]):
 
         if p.returncode != 0:
             await ctx.send(language["cmd"]["update_exitcode"].format(p.returncode))
-            await ctx.send(":x: Process exited with return code {p.returncode}")
             return
 
         if b"Already up to date" in p.stdout:
