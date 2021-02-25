@@ -24,6 +24,8 @@ from .Demon import Demon
 from .gamemodes.troublebrewing.Saint import Saint
 from .gamemodes.troublebrewing.Drunk import Drunk
 from .gamemodes.troublebrewing._utils import TroubleBrewing
+from .gamemodes.badmoonrising._utils import BadMoonRising
+from .gamemodes.sectsandviolets._utils import SectsAndViolets
 from .gamemodes.Gamemode import Gamemode
 from .RoleGuide import RoleGuide
 from .gameloops import master_game_loop, nomination_loop, base_day_loop, debate_timer
@@ -73,6 +75,8 @@ with open('botc/game_text.json') as json_file:
     evilteammates = strings["gameplay"]["evilteammates"]
     copyrights_str = strings["misc"]["copyrights"]
     tb_lore = strings["gameplay"]["tb_lore"]
+    bmr_lore = strings["gameplay"]["bmr_lore"] # TODO add bmr lore
+    snv_lore = strings["gameplay"]["snv_lore"] # TODO add snv lore
     nightfall_image = strings["images"]["nightfall"]
     dawn_image = strings["images"]["dawn"]
     daybreak_image = strings["images"]["daybreak"]
@@ -203,9 +207,10 @@ class Game(GameMeta):
     MIN_PLAYERS = 5
     MAX_PLAYERS = 15
 
-    def __init__(self):
+    def __init__(self, gamemode = Gamemode.trouble_brewing):
 
-        self._gamemode = Gamemode.trouble_brewing  # default gamemode will always be trouble brewing
+        self._gamemode = gamemode  # default gamemode will always be trouble brewing
+
         self._member_obj_list = []  # list object - list of discord member objects
         self._player_obj_list = []  # list object - list of player objects
         self._sitting_order = tuple()  # tuple object (for immutability)
@@ -344,7 +349,7 @@ class Game(GameMeta):
         if self.gamemode == Gamemode.trouble_brewing:
             embed = discord.Embed(
                description = tb_lore
-               )
+            )
             # Using the Saint() object to access some URL's
             embed.set_thumbnail(url = TroubleBrewing()._gm_art_link)
             embed.set_author(name = "𝕿𝖗𝖔𝖚𝖇𝖑𝖊 𝕭𝖗𝖊𝖜𝖎𝖓𝖌 - 𝕭𝖑𝖔𝖔𝖉 𝖔𝖓 𝖙𝖍𝖊 𝕮𝖑𝖔𝖈𝖐𝖙𝖔𝖜𝖊𝖗 (𝕭𝖔𝕿𝕮)",
@@ -356,10 +361,40 @@ class Game(GameMeta):
             msg = lobby_game_start.format(pings, "𝕿𝖗𝖔𝖚𝖇𝖑𝖊 𝕭𝖗𝖊𝖜𝖎𝖓𝖌", self.nb_players)
 
             await botutils.send_lobby(msg, embed=embed)
-
-        # Bad Moon Rising Edition
+        
+        # Bad Moon Rising edition
         elif self.gamemode == Gamemode.bad_moon_rising:
-            pass
+            embed = discord.Embed(
+               description = bmr_lore
+            )
+            # Using the Saint() object to access some URL's
+            embed.set_thumbnail(url = BadMoonRising()._gm_art_link)
+            embed.set_author(name = "𝕭𝖆𝖉 𝕸𝖔𝖔𝖓 𝕽𝖎𝖘𝖎𝖓𝖌 - 𝕭𝖑𝖔𝖔𝖉 𝖔𝖓 𝖙𝖍𝖊 𝕮𝖑𝖔𝖈𝖐𝖙𝖔𝖜𝖊𝖗 (𝕭𝖔𝕿𝕮)",
+                             icon_url = Saint()._botc_logo_link)
+            embed.timestamp = datetime.datetime.utcnow()
+            embed.set_footer(text = copyrights_str)
+
+            pings = " ".join([player.user.mention for player in self.sitting_order])
+            msg = lobby_game_start.format(pings, "𝕭𝖆𝖉 𝕸𝖔𝖔𝖓 𝕽𝖎𝖘𝖎𝖓𝖌", self.nb_players)
+
+            await botutils.send_lobby(msg, embed=embed)
+
+        # Sects And Violets edition
+        elif self.gamemode == Gamemode.sects_and_violets:
+            embed = discord.Embed(
+               description = snv_lore
+            )
+            # Using the Saint() object to access some URL's
+            embed.set_thumbnail(url = SectsAndViolets()._gm_art_link)
+            embed.set_author(name = "𝕾𝖊𝖈𝖙𝖘 𝖆𝖓𝖉 𝖁𝖎𝖔𝖑𝖊𝖙𝖘 - 𝕭𝖑𝖔𝖔𝖉 𝖔𝖓 𝖙𝖍𝖊 𝕮𝖑𝖔𝖈𝖐𝖙𝖔𝖜𝖊𝖗 (𝕭𝖔𝕿𝕮)",
+                             icon_url = Saint()._botc_logo_link)
+            embed.timestamp = datetime.datetime.utcnow()
+            embed.set_footer(text = copyrights_str)
+
+            pings = " ".join([player.user.mention for player in self.sitting_order])
+            msg = lobby_game_start.format(pings, "𝕾𝖊𝖈𝖙𝖘 𝖆𝖓𝖉 𝖁𝖎𝖔𝖑𝖊𝖙𝖘", self.nb_players)
+
+            await botutils.send_lobby(msg, embed=embed)
 
     async def send_lobby_closing_message(self, win_con_reason = ""):
         """Send the closing message in lobby"""
@@ -626,6 +661,11 @@ class Game(GameMeta):
         # Load game related commands
         if self.gamemode == Gamemode.trouble_brewing:
             globvars.client.load_extension("botc.commands.abilities.tb")
+        elif self.gamemode == Gamemode.bad_moon_rising:
+            globvars.client.load_extension("botc.commands.abilities.bmr")
+        elif self.gamemode == Gamemode.sects_and_violets:
+            globvars.client.load_extension("botc.commands.abilities.snv")
+        
         globvars.client.load_extension("botc.commands.townhall")
         globvars.client.load_extension("botc.commands.debug")
         # Start the game loop
@@ -653,34 +693,43 @@ class Game(GameMeta):
                 for character in list_of_characters:
                     await character.role.ego_self.process_dawn_ability(character)
 
-    async def compute_night_ability_interactions(self):
-        """Order of Action (First Night)
-        1. poisoner
-        2. washerwoman
-        3. librarian
-        4. investigator
-        5. chef
-        6. empath
-        7. fortune teller
-        8. butler
-        9. spy
+        elif self.gamemode == Gamemode.trouble_brewing:
+            pass
 
-        Order of Action (All Other Nights)
-        1. poisoner
-        2. monk
-        3. scarlet woman
-        4. imp
-        5. ravenkeeper
-        6. empath
-        7. fortune teller
-        8. butler
-        9. undertaker
-        10. spy
+        elif self.gamemode == Gamemode.sects_and_violets:
+            pass
+
+    async def compute_night_ability_interactions(self):
+        """
+        Prompt all players to complete their night actions, according to night order for the selected gamemode
         """
 
         await self.remove_left_guild_players()
 
         if self.gamemode == Gamemode.trouble_brewing:
+            """Order of Action (First Night)
+            1. poisoner
+            2. washerwoman
+            3. librarian
+            4. investigator
+            5. chef
+            6. empath
+            7. fortune teller
+            8. butler
+            9. spy
+
+            Order of Action (All Other Nights)
+            1. poisoner
+            2. monk
+            3. scarlet woman
+            4. imp
+            5. ravenkeeper
+            6. empath
+            7. fortune teller
+            8. butler
+            9. undertaker
+            10. spy
+            """
 
             from botc.gamemodes.troublebrewing._utils import TBRole
 
@@ -713,19 +762,160 @@ class Game(GameMeta):
 
             ]
 
-            # Night 1 order
-            if self._chrono.is_night_1():
-                for character_enum in night_1_order:
-                    list_of_characters = BOTCUtils.get_players_from_role_name(character_enum)
-                    for character in list_of_characters:
-                        await character.role.ego_self.process_night_ability(character)
+        elif self.gamemode == Gamemode.bad_moon_rising:
+            """Order of Action (First Night)
+            1. lunatic
+            2. sailor
+            3. courtier
+            4. godfather
+            5. devil's advocate
+            6. pukka    
+            7. grandmother
+            8. chambermaid
 
-            # Regular night order
-            else:
-                for character_enum in night_regular_order:
-                    list_of_characters = BOTCUtils.get_players_from_role_name(character_enum)
-                    for character in list_of_characters:
-                        await character.role.ego_self.process_night_ability(character)
+            Order of Action (All Other Nights)
+            1. sailor
+            2. courtier
+            3. innkeeper
+            4. gambler
+            5. devil's advocate
+            6. lunatic
+            7. exorcist
+            8. zombuul
+            9. pukka
+            10. shabaloth
+            11. po
+            12. assasin
+            13. godfather
+            14. gossip
+            15. professor
+            16. tinker
+            17. moonchild
+            18. grandmother
+            19. chambermaid
+            """
+
+            from botc.gamemodes.badmoonrising._utils import BMRRole
+
+            night_1_order = [
+                BMRRole.lunatic,
+                BMRRole.sailor,
+                BMRRole.courtier,
+                BMRRole.godfather,
+                BMRRole.devilsadvocate,
+                BMRRole.pukka,
+                BMRRole.grandmother,
+                BMRRole.chambermaid
+            ]
+
+            night_regular_order = [
+                BMRRole.sailor,
+                BMRRole.courtier,
+                BMRRole.innkeeper,
+                BMRRole.gambler,
+                BMRRole.devilsadvocate,
+                BMRRole.lunatic,
+                BMRRole.exorcist,
+                BMRRole.zombuul,
+                BMRRole.pukka,
+                BMRRole.shabaloth,
+                BMRRole.po,
+                BMRRole.assassin,
+                BMRRole.godfather,
+                BMRRole.gossip,
+                BMRRole.professor,
+                BMRRole.tinker,
+                BMRRole.moonchild,
+                BMRRole.grandmother,
+                BMRRole.chambermaid
+            ]
+
+        elif self.gamemode == Gamemode.sects_and_violets:
+            """Order of Action (First Night)
+            1. philosopher
+            2. snake charmer
+            3. evil twin
+            4. witch
+            5. cerenovus
+            6. clockmaker
+            7. dreamer
+            8. seamstress
+            9. mathematician
+
+            Order of Action (All Other Nights)
+            1. philosopher
+            2. snake charmer
+            3. witch
+            4. cerenovus
+            5. pit-hag
+            6. fang gu
+            7. no dashii
+            8. vortox
+            9. vigormortis
+            10. barber
+            11. sweetheart
+            12. sage
+            13. dreamer
+            14. flowergirl
+            15. town crier
+            16. oracle
+            17. seamstress
+            18. juggler
+            19. mathematician
+            """
+
+            from botc.gamemodes.sectsandviolets._utils import SnVRole
+
+            night_1_order = [
+                SnVRole.philosopher,
+                SnVRole.snakecharmer,
+                SnVRole.eviltwin,
+                SnVRole.witch,
+                SnVRole.cerenovus,
+                SnVRole.clockmaker,
+                SnVRole.dreamer,
+                SnVRole.seamstress,
+                SnVRole.mathematician
+            ]
+
+            night_regular_order = [
+                SnVRole.philosopher,
+                SnVRole.snakecharmer,
+                SnVRole.witch,
+                SnVRole.cerenovus,
+                SnVRole.pithag,
+                SnVRole.fanggu,
+                SnVRole.nodashii,
+                SnVRole.vortox,
+                SnVRole.vigormortis,
+                SnVRole.barber,
+                SnVRole.sweetheart,
+                SnVRole.sage,
+                SnVRole.dreamer,
+                SnVRole.flowergirl,
+                SnVRole.towncrier,
+                SnVRole.oracle,
+                SnVRole.seamstress,
+                SnVRole.juggler,
+                SnVRole.mathematician
+            ]
+
+        else:
+            raise GameError("Gamemode is not one of available BoTC editions.")
+
+        # Night 1 order
+        if self._chrono.is_night_1():
+            for character_enum in night_1_order:
+                list_of_characters = BOTCUtils.get_players_from_role_name(character_enum)
+                for character in list_of_characters:
+                    await character.role.ego_self.process_night_ability(character)
+
+        # Regular night order
+        else:
+            for character_enum in night_regular_order:
+                list_of_characters = BOTCUtils.get_players_from_role_name(character_enum)
+                for character in list_of_characters:
+                    await character.role.ego_self.process_night_ability(character)
 
     def has_received_all_expected_dawn_actions(self):
         """Check if all players with expected dawn actions have submitted them"""
@@ -804,6 +994,11 @@ class Game(GameMeta):
         # Unload extensions
         if self.gamemode == Gamemode.trouble_brewing:
             globvars.client.unload_extension("botc.commands.abilities.tb")
+        elif self.gamemode == Gamemode.bad_moon_rising:
+            globvars.client.unload_extension("botc.commands.abilities.bmr")
+        elif self.gamemode == Gamemode.sects_and_violets:
+            globvars.client.unload_extension("botc.commands.abilities.snv")
+        
         globvars.client.unload_extension("botc.commands.townhall")
         globvars.client.unload_extension("botc.commands.debug")
         # Load conflicting commands
@@ -823,7 +1018,7 @@ class Game(GameMeta):
         if debate_timer.is_running():
             debate_timer.cancel()
         # Clear the game object
-        self.__init__()
+        self.__init__(self._gamemode)
         globvars.master_state.game = None
         # Unlock the lobby channel
         await botutils.unlock_lobby()
@@ -988,46 +1183,46 @@ class Game(GameMeta):
 
             # Trouble brewing mode
             if self.gamemode == Gamemode.trouble_brewing:
-
-                tb_townsfolk_all = BOTCUtils.get_role_list(TroubleBrewing, Townsfolk)
-                tb_outsider_all = BOTCUtils.get_role_list(TroubleBrewing, Outsider)
-                tb_minion_all = BOTCUtils.get_role_list(TroubleBrewing, Minion)
-                tb_demon_all = BOTCUtils.get_role_list(TroubleBrewing, Demon)
-
-                ret_townsfolk = random.sample(tb_townsfolk_all, nb_townsfolk)
-                ret_outsider = random.sample(tb_outsider_all, nb_outsider)
-                ret_minion = random.sample(tb_minion_all, nb_minion)
-                ret_demon = random.sample(tb_demon_all, nb_demon)
-
-                final_townsfolk = ret_townsfolk.copy()
-                final_outsider = ret_outsider.copy()
-                final_minion = ret_minion.copy()
-                final_demon = ret_demon.copy()
-
-                prelim = ret_townsfolk + ret_outsider + ret_minion + ret_demon
-
-                for role in prelim:
-                    setup_next = role.exec_init_setup(final_townsfolk, final_outsider, final_minion, final_demon)
-                    final_townsfolk = setup_next[0]
-                    final_outsider = setup_next[1]
-                    final_minion = setup_next[2]
-                    final_demon = setup_next[3]
-
-                setup = final_townsfolk + final_outsider + final_minion + final_demon
-                random.shuffle(setup)
-
-                return setup
+                selected_gamemode = TroubleBrewing
 
             # Bad moon rising mode
             elif self.gamemode == Gamemode.bad_moon_rising:
-                pass
+                selected_gamemode = BadMoonRising
 
             # Sects and violets mode
             elif self.gamemode == Gamemode.sects_and_violets:
-                pass
+                selected_gamemode = SectsAndViolets
 
             else:
                 raise GameError("Gamemode is not one of available BoTC editions.")
+
+            townsfolk_all = BOTCUtils.get_role_list(selected_gamemode, Townsfolk)
+            outsider_all = BOTCUtils.get_role_list(selected_gamemode, Outsider)
+            minion_all = BOTCUtils.get_role_list(selected_gamemode, Minion)
+            demon_all = BOTCUtils.get_role_list(selected_gamemode, Demon)
+
+            ret_townsfolk = random.sample(townsfolk_all, nb_townsfolk)
+            ret_outsider = random.sample(outsider_all, nb_outsider)
+            ret_minion = random.sample(minion_all, nb_minion)
+            ret_demon = random.sample(demon_all, nb_demon)
+
+            final_townsfolk = ret_townsfolk.copy()
+            final_outsider = ret_outsider.copy()
+            final_minion = ret_minion.copy()
+            final_demon = ret_demon.copy()
+
+            prelim = ret_townsfolk + ret_outsider + ret_minion + ret_demon          
+            for role in prelim:
+                setup_next = role.exec_init_setup(final_townsfolk, final_outsider, final_minion, final_demon)
+                final_townsfolk = setup_next[0]
+                final_outsider = setup_next[1]
+                final_minion = setup_next[2]
+                final_demon = setup_next[3]
+
+            setup = final_townsfolk + final_outsider + final_minion + final_demon
+            random.shuffle(setup)
+
+            return setup
 
     def distribute_roles(self, role_obj_list, member_obj_list):
         """Distribute the roles to the players"""
