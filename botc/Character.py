@@ -331,7 +331,7 @@ class Character:
         try:
             await recipient.send(embed = embed)
         except discord.Forbidden:
-            #await botutils.send_lobby(blocked.format(recipient.mention))
+            await botutils.send_lobby(blocked.format(recipient.mention))
             pass
 
     def add_action_field_n1(self, embed_obj):
