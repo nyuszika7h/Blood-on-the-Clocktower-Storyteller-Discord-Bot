@@ -119,7 +119,7 @@ class Whisper(commands.Cog, name = documentation["misc"]["townhall_cog"]):
             await ctx.send(documentation["cmd_warnings"]["day_only"].format(ctx.author.mention, emoji))
         # Missing argument -> commands.MissingRequiredArgument
         elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(documentation["cmd_warnings"]["player_not_found"].format(ctx.author.mention, emoji))
+            await ctx.send(documentation["cmd_warnings"]["whisper_missing_args"].format(ctx.author.mention, emoji))
         # Whisper too long -> WhisperTooLong
         elif isinstance(error, WhisperTooLong):
             await ctx.send(documentation["cmd_warnings"]["whisper_too_long"].format(ctx.author.mention, emoji))
