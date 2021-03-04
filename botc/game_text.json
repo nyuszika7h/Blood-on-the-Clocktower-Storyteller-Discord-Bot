@@ -220,7 +220,7 @@
         "dawn" : "It is currently **dawn**.",
         "daybreak" : "It is currently **daytime**.",
         "blocked" : "{} You have either blocked me, or have not enabled direct messages from server members.",
-        "lobby_game_start" : "{} Welcome to **𝕭𝖑𝖔𝖔𝖉 𝖔𝖓 𝖙𝖍𝖊 𝕮𝖑𝖔𝖈𝖐𝖙𝖔𝖜𝖊𝖗 (𝕭𝖔𝕿𝕮)**, played using the **{}** Edition with **{}** players. All players should now have received a DM from me for private instructions.",
+        "lobby_game_start" : "{} Welcome to **𝕭𝖑𝖔𝖔𝖉 𝖔𝖓 𝖙𝖍𝖊 𝕮𝖑𝖔𝖈𝖐𝖙𝖔𝖜𝖊𝖗 (𝕭𝖔𝕿𝕮)**, played using the **{}** Edition with **{}** players. All players will soon receive a DM from me for private instructions.",
         "lobby_game_closing" : "{} Game over! Thank you for playing **𝕭𝖑𝖔𝖔𝖉 𝖔𝖓 𝖙𝖍𝖊 𝕮𝖑𝖔𝖈𝖐𝖙𝖔𝖜𝖊𝖗 (𝕭𝖔𝕿𝕮)**, using the **{}** Edition with **{}** players.",
         "demonbluffs" : "To help you survive, here are 3 not-in-play characters that you may decide to bluff as: **{}**, **{}** and **{}**.",
         "evilteammates" : "Your Evil teammates are shown below: ",
