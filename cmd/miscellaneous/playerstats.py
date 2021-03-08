@@ -9,7 +9,7 @@ import discord
 from discord.ext import commands
 
 import botutils
-from ._gameplay import Gameplay
+from ._miscellaneous import Miscellaneous
 
 with open("botutils/bot_text.json") as json_file:
     language = json.load(json_file)
@@ -30,7 +30,7 @@ user_not_found_str = language["errors"]["user_not_found"]
 error_str = language["system"]["error"]
 
 
-class Playerstats(Gameplay, name = language["system"]["gameplay_cog"]):
+class Playerstats(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
     """Playerstats command cog"""
 
     @commands.command(
@@ -41,7 +41,6 @@ class Playerstats(Gameplay, name = language["system"]["gameplay_cog"]):
         help = language["doc"]["playerstats"]["help"],
         description = language["doc"]["playerstats"]["description"]
     )
-    @commands.check(botutils.check_if_lobby_or_dm_or_admin)
     async def playerstats(self, ctx, *, user: Union[discord.Member, discord.User] = None):
         """Playerstats command"""
 

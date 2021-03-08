@@ -7,9 +7,8 @@ import sqlite3
 import discord
 from discord.ext import commands
 
-import botutils
 import globvars
-from ._gameplay import Gameplay
+from ._miscellaneous import Miscellaneous
 
 Config = configparser.ConfigParser()
 Config.read("config.INI")
@@ -24,7 +23,7 @@ top_footer_str = language["cmd"]["top_footer"]
 top_footer_winrate_str = language["cmd"]["top_footer_winrate"]
 
 
-class Top(Gameplay, name = language["system"]["gameplay_cog"]):
+class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
     """Top command cog"""
 
     @commands.command(
@@ -35,7 +34,6 @@ class Top(Gameplay, name = language["system"]["gameplay_cog"]):
         help = language["doc"]["top"]["help"],
         description = language["doc"]["top"]["description"]
     )
-    @commands.check(botutils.check_if_lobby_or_dm_or_admin)
     async def top(self, ctx, arg=None):
         """Top command"""
 

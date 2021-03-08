@@ -6,8 +6,7 @@ import sqlite3
 import discord
 from discord.ext import commands
 
-import botutils
-from ._gameplay import Gameplay
+from ._miscellaneous import Miscellaneous
 
 with open("botutils/bot_text.json") as json_file:
     language = json.load(json_file)
@@ -23,7 +22,7 @@ gamestats_no_games_str = language["cmd"]["gamestats_no_games"]
 gamestats_no_games_players_str = language["cmd"]["gamestats_no_games_players"]
 
 
-class Gamestats(Gameplay, name = language["system"]["gameplay_cog"]):
+class Gamestats(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
     """Gamestats command cog"""
 
     @commands.command(
@@ -33,7 +32,6 @@ class Gamestats(Gameplay, name = language["system"]["gameplay_cog"]):
         help = language["doc"]["gamestats"]["help"],
         description = language["doc"]["gamestats"]["description"]
     )
-    @commands.check(botutils.check_if_lobby_or_dm_or_admin)
     async def gamestats(self, ctx, players: int = None):
         """Gamestats command"""
 
