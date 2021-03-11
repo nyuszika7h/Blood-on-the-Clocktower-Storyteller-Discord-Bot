@@ -4,6 +4,7 @@ import discord
 import datetime
 import botutils
 import json
+import configparser
 from botc import BOTCUtils
 
 butterfly = botutils.BotEmoji.butterfly
@@ -12,6 +13,10 @@ with open('botc/game_text.json') as json_file:
     strings = json.load(json_file)
     copyrights_str = strings["misc"]["copyrights"]
 
+Config = configparser.ConfigParser()
+Config.read('config.INI')
+
+DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 
 # ------- For Night -------
 
@@ -36,6 +41,9 @@ class RecurringAction:
 
     async def send_regular_night_start_dm(self, recipient):
         """Send the query for night action for each regular night (not the first one)"""
+
+        if DISABLE_DMS:
+            return
 
         import globvars
 
