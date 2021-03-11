@@ -1,4 +1,5 @@
 aiohttp
+emoji
 git+https://github.com/Rapptz/discord.py.git
 Pillow
 pytz

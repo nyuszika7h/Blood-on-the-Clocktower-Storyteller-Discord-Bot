@@ -91,8 +91,8 @@ async def nomination_loop(game, nominator, nominated):
 
     import globvars
 
-    approved_emoji = globvars.client.get_emoji(botutils.get_emoji_id(botutils.BotEmoji.approved)) or '✅'
-    denied_emoji = globvars.client.get_emoji(botutils.get_emoji_id(botutils.BotEmoji.denied)) or '❌'
+    approved_emoji = botutils.get_emoji(botutils.BotEmoji.approved) or '✅'
+    denied_emoji = botutils.get_emoji(botutils.BotEmoji.denied) or '❌'
 
     # Debate time
     debate_timer.start()

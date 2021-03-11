@@ -4,6 +4,8 @@ import configparser
 import datetime
 import re
 
+import emoji
+
 import globvars
 
 
@@ -93,6 +95,9 @@ def find_role_in_all(role_name):
     return match
 
 
-def get_emoji_id(s):
-    """Get the emoji's ID from a string"""
-    return int(re.split(r'[<:>]', s)[3])
+def get_emoji(s):
+    """Get the emoji from a string"""
+    if s in emoji.UNICODE_EMOJI['en']:
+        return s
+    else:
+        return globvars.client.get_emoji(int(re.split(r'[<:>]', s)[-2]))
