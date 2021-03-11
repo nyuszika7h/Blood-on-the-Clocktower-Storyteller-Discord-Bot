@@ -2,6 +2,8 @@
 
 import configparser
 import datetime
+import re
+
 import globvars
 
 
@@ -89,3 +91,8 @@ def find_role_in_all(role_name):
                 elif role_name.lower() in role.name.lower() and not match:
                     match = role
     return match
+
+
+def get_emoji_id(s):
+    """Get the emoji's ID from a string"""
+    return int(re.split(r'[<:>]', s)[3])

@@ -91,6 +91,9 @@ async def nomination_loop(game, nominator, nominated):
 
     import globvars
 
+    approved_emoji = globvars.client.get_emoji(botutils.get_emoji_id(botutils.BotEmoji.approved)) or '✅'
+    denied_emoji = globvars.client.get_emoji(botutils.get_emoji_id(botutils.BotEmoji.denied)) or '❌'
+
     # Debate time
     debate_timer.start()
     await asyncio.sleep(DEBATE_TIME)
@@ -140,14 +143,14 @@ async def nomination_loop(game, nominator, nominated):
             if game.chopping_block:
                 msg += votes_to_tie.format(
                     votes = game.chopping_block.nb_votes,
-                    emoji = botutils.BotEmoji.approved
+                    emoji = approved_emoji,
                 )
 
             # No one is on the chopping block yet
             else:
                 msg += votes_to_exe.format(
                     votes = nb_required_votes,
-                    emoji = botutils.BotEmoji.approved
+                    emoji = approved_emoji,
                 )
             
             msg += "\n"
@@ -156,7 +159,7 @@ async def nomination_loop(game, nominator, nominated):
             # 【 0 :approved: votes currently. 】
             msg += votes_current.format(
                 votes = nb_current_votes,
-                emoji = botutils.BotEmoji.approved
+                emoji = approved_emoji,
             )
 
             # Create the embed and associated assets
@@ -166,8 +169,8 @@ async def nomination_loop(game, nominator, nominated):
 
             # Send the message and add reactions
             message = await botutils.send_lobby(message = player.user.mention, embed = embed)
-            await message.add_reaction(botutils.BotEmoji.approved)
-            await message.add_reaction(botutils.BotEmoji.denied)
+            await message.add_reaction(approved_emoji)
+            await message.add_reaction(denied_emoji)
 
             def check(reaction, user):
                 """Reaction must meet these criteria:
@@ -176,7 +179,7 @@ async def nomination_loop(game, nominator, nominated):
                 - Must be on the same voting call message
                 """
                 return user.id == player.user.id and \
-                    str(reaction.emoji) in (botutils.BotEmoji.approved, botutils.BotEmoji.denied) and \
+                    str(reaction.emoji) in (approved_emoji, denied_emoji) and \
                     reaction.message.id == message.id
             
             try:
@@ -187,7 +190,7 @@ async def nomination_loop(game, nominator, nominated):
             except asyncio.TimeoutError:
                 author_str = f"{player.user.name}#{player.user.discriminator}, "
                 msg = voted_no.format(
-                    botutils.BotEmoji.denied,
+                    denied_emoji,
                     nominated.game_nametag
                 )
                 new_embed = discord.Embed(
@@ -207,10 +210,10 @@ async def nomination_loop(game, nominator, nominated):
             else:
 
                 # Hand up (lynch)
-                if str(reaction.emoji) == botutils.BotEmoji.approved:
+                if str(reaction.emoji) == approved_emoji:
                     author_str = f"{player.user.name}#{player.user.discriminator}, "
                     msg = voted_yes.format(
-                        botutils.BotEmoji.approved,
+                        approved_emoji,
                         nominated.game_nametag
                     )
                     nb_current_votes += 1
@@ -226,10 +229,10 @@ async def nomination_loop(game, nominator, nominated):
                         new_embed.set_thumbnail(url = dead_lynch)
                 
                 # Hand down (no lynch)
-                elif str(reaction.emoji) == botutils.BotEmoji.denied:
+                elif str(reaction.emoji) == denied_emoji:
                     author_str = f"{player.user.name}#{player.user.discriminator}, "
                     msg = voted_no.format(
-                        botutils.BotEmoji.denied,
+                        denied_emoji,
                         nominated.game_nametag
                     )
                     new_embed = discord.Embed(
@@ -268,19 +271,19 @@ async def nomination_loop(game, nominator, nominated):
     if game.chopping_block:
         msg += votes_to_tie.format(
             votes = game.chopping_block.nb_votes,
-            emoji = botutils.BotEmoji.approved
+            emoji = approved_emoji
         )
     else:
         msg += votes_to_exe.format(
             votes = nb_required_votes,
-            emoji = botutils.BotEmoji.approved
+            emoji = approved_emoji
         )
     msg += "\n"
 
     # Current vote stats
     msg += votes_current.format(
         votes = nb_current_votes,
-        emoji = botutils.BotEmoji.approved
+        emoji = approved_emoji
     )
     msg += "\n"
     msg += "\n"
