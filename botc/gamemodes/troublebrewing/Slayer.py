@@ -11,6 +11,9 @@ import globvars
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
     character_text = json.load(json_file)[TBRole.slayer.value.lower()] 
 
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
+
 
 class Slayer(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     """Slayer: Once per game, during the day, publicly choose a player: if they are the Demon, they die.
@@ -54,7 +57,7 @@ class Slayer(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Slayer"
 
         self._role_enum = TBRole.slayer
-        self._emoji = "<:tbslayer:739317350704218274>"
+        self._emoji = emojis["troublebrewing"]["slayer"]
 
         self.inventory = Inventory(
             Flags.slayer_unique_attempt
@@ -69,9 +72,7 @@ class Slayer(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         
         # Some characters have a line of addendum
         if addendum:
-            with open("botutils/bot_text.json") as json_file:
-                bot_text = json.load(json_file)
-                scroll_emoji = bot_text["esthetics"]["scroll"]
+            scroll_emoji = botutils.BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
             
         return msg

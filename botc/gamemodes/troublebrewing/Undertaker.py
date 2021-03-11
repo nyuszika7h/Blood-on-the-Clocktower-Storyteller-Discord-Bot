@@ -8,6 +8,7 @@ import configparser
 from botc import Townsfolk, Character, NonRecurringAction, BOTCUtils, Townsfolk, \
     Outsider, Minion, Demon
 from ._utils import TroubleBrewing, TBRole
+import botutils
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
     character_text = json.load(json_file)[TBRole.undertaker.value.lower()]
@@ -17,6 +18,9 @@ with open('botc/game_text.json') as json_file:
     undertaker_nightly = strings["gameplay"]["undertaker_nightly"]
     undertaker_none = strings["gameplay"]["undertaker_none"]
     copyrights_str = strings["misc"]["copyrights"]
+
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
 
 Config = configparser.ConfigParser()
 Config.read('config.INI')
@@ -66,7 +70,7 @@ class Undertaker(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Undertaker"
 
         self._role_enum = TBRole.undertaker
-        self._emoji = "<:tbundertaker:739317350553092136>"
+        self._emoji = emojis["troublebrewing"]["undertaker"]
 
     def create_n1_instr_str(self):
         """Create the instruction field on the opening dm card"""
@@ -77,9 +81,7 @@ class Undertaker(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         
         # Some characters have a line of addendum
         if addendum:
-            with open("botutils/bot_text.json") as json_file:
-                bot_text = json.load(json_file)
-                scroll_emoji = bot_text["esthetics"]["scroll"]
+            scroll_emoji = botutils.BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
             
         return msg

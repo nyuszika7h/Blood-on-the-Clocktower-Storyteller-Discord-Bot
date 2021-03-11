@@ -9,14 +9,11 @@ from botc import Action, ActionTypes, Townsfolk, Character, Storyteller, RedHerr
     RecurringAction, Category, StatusList
 from botc.BOTCUtils import GameLogic
 from ._utils import TroubleBrewing, TBRole
+import botutils
 import globvars
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
     character_text = json.load(json_file)[TBRole.fortuneteller.value.lower()]
-
-with open('botutils/bot_text.json') as json_file:
-    bot_text = json.load(json_file)
-    butterfly = bot_text["esthetics"]["butterfly"]
 
 with open('botc/game_text.json') as json_file: 
     strings = json.load(json_file)
@@ -26,6 +23,9 @@ with open('botc/game_text.json') as json_file:
     no = strings["gameplay"]["no"]
     good_link = strings["images"]["good"]
     evil_link = strings["images"]["evil"]
+
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
 
 Config = configparser.ConfigParser()
 Config.read('config.INI')
@@ -77,7 +77,7 @@ class FortuneTeller(Townsfolk, TroubleBrewing, Character, RecurringAction):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Fortune_Teller"
 
         self._role_enum = TBRole.fortuneteller
-        self._emoji = "<:tbfortuneteller:739317350733578280>"
+        self._emoji = emojis["troublebrewing"]["fortuneteller"]
 
     def create_n1_instr_str(self):
         """Create the instruction field on the opening dm card"""
@@ -88,9 +88,7 @@ class FortuneTeller(Townsfolk, TroubleBrewing, Character, RecurringAction):
         
         # Some characters have a line of addendum
         if addendum:
-            with open("botutils/bot_text.json") as json_file:
-                bot_text = json.load(json_file)
-                scroll_emoji = bot_text["esthetics"]["scroll"]
+            scroll_emoji = botutils.BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
             
         return msg
@@ -100,7 +98,7 @@ class FortuneTeller(Townsfolk, TroubleBrewing, Character, RecurringAction):
 
         msg = self.action
         msg += globvars.master_state.game.create_sitting_order_stats_string()
-        embed_obj.add_field(name = butterfly + " **「 Your Action 」**", value = msg, inline = False)
+        embed_obj.add_field(name = botutils.BotEmoji.butterfly + " **「 Your Action 」**", value = msg, inline = False)
         return embed_obj
     
     def exec_init_role(self, setup):
@@ -134,7 +132,7 @@ class FortuneTeller(Townsfolk, TroubleBrewing, Character, RecurringAction):
         if DISABLE_DMS:
             return
 
-        msg = butterfly + " " + character_text["feedback"].format(targets[0].game_nametag, targets[1].game_nametag)
+        msg = botutils.BotEmoji.butterfly + " " + character_text["feedback"].format(targets[0].game_nametag, targets[1].game_nametag)
         await player.user.send(msg)
     
     async def exec_read(self, fortune_teller_player, read_player_1, read_player_2):

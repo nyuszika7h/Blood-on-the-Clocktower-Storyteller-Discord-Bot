@@ -10,6 +10,7 @@ from botc import Minion, Character, Townsfolk, Outsider, NonRecurringAction, \
     BOTCUtils
 from ._utils import TroubleBrewing, TBRole
 from discord.ext import tasks
+import botutils
 import globvars
 
 Preferences = configparser.ConfigParser()
@@ -30,6 +31,9 @@ with open('botc/game_text.json') as json_file:
     strings = json.load(json_file)
     copyrights_str = strings["misc"]["copyrights"]
     spy_nightly = strings["gameplay"]["spy_nightly"]
+
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
 
 
 class Spy(Minion, TroubleBrewing, Character, NonRecurringAction):
@@ -76,7 +80,7 @@ class Spy(Minion, TroubleBrewing, Character, NonRecurringAction):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Spy"
 
         self._role_enum = TBRole.spy
-        self._emoji = "<:tbspy:739317350607749200>"
+        self._emoji = emojis["troublebrewing"]["spy"]
 
     def create_n1_instr_str(self):
         """Create the instruction field on the opening dm card"""
@@ -87,9 +91,7 @@ class Spy(Minion, TroubleBrewing, Character, NonRecurringAction):
         
         # Some characters have a line of addendum
         if addendum:
-            with open("botutils/bot_text.json") as json_file:
-                bot_text = json.load(json_file)
-                scroll_emoji = bot_text["esthetics"]["scroll"]
+            scroll_emoji = botutils.BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
             
         return msg

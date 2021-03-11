@@ -65,3 +65,9 @@ class BotEmoji:
 
     # BOTC
     demonhead = emojis["demon_head"]
+
+    # Social media
+    facebook = emojis["facebook"]
+    youtube = emojis["youtube"]
+    twitter = emojis["twitter"]
+    reddit = emojis["reddit"]

@@ -7,6 +7,9 @@ from ._utils import BadMoonRising, BMRRole
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.chambermaid.value.lower()]
 
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
+
 
 class Chambermaid(Townsfolk, BadMoonRising, Character):
     """Chambermaid Each night, choose 2 alive players (not yourself): you learn how many woke 
@@ -31,4 +34,4 @@ class Chambermaid(Townsfolk, BadMoonRising, Character):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Chambermaid"
 
         self._role_enum = BMRRole.chambermaid
-        self._emoji = "<:bmrchambermaid:781151556053499925>"
+        self._emoji = emojis["badmoonrising"]["chambermaid"]

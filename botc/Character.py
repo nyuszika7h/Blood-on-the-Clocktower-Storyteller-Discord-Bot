@@ -83,7 +83,7 @@ class Character:
 
         # Other
         self._emoji = None
-        self._demon_head_emoji = "<:demonhead:736692927505367190>"
+        self._demon_head_emoji = botutils.BotEmoji.demonhead
     
     # -------------------- Character Properties --------------------
     

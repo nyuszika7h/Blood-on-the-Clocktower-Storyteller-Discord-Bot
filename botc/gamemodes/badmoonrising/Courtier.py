@@ -7,6 +7,9 @@ from ._utils import BadMoonRising, BMRRole
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.courtier.value.lower()]
 
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
+
 
 class Courtier(Townsfolk, BadMoonRising, Character):
     """Courtier: Once per game, at night, choose a character: they are drunk for 3 nights & 3 days.
@@ -30,4 +33,4 @@ class Courtier(Townsfolk, BadMoonRising, Character):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Courtier"
 
         self._role_enum = BMRRole.courtier
-        self._emoji = "<:bmrcourtier:781151556128342058>"
+        self._emoji = emojis["badmoonrising"]["courtier"]

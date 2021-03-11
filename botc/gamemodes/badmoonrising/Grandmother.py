@@ -7,6 +7,9 @@ from ._utils import BadMoonRising, BMRRole
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.grandmother.value.lower()]
 
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
+
 
 class Grandmother(Townsfolk, BadMoonRising, Character):
     """Grandmother: You start knowing a good player & character. If the Demon kills them, you die too.
@@ -30,5 +33,5 @@ class Grandmother(Townsfolk, BadMoonRising, Character):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Grandmother"
 
         self._role_enum = BMRRole.grandmother
-        self._emoji = "<:bmrgrandmother:781019504427008010>"
+        self._emoji = emojis["badmoonrising"]["grandmother"]
         

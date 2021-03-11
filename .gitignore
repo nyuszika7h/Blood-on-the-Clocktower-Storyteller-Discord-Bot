@@ -146,3 +146,5 @@ townsquare.png
 playtest.py
 log.txt
 data.sqlite3
+emojis.json
+botc/emojis.json

@@ -6,10 +6,14 @@ import discord
 from botc import BOTCUtils, Minion, Character, NonRecurringAction, Townsfolk
 from botc.Outsider import Outsider
 from ._utils import TroubleBrewing, TBRole
+import botutils
 import globvars
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
     character_text = json.load(json_file)[TBRole.baron.value.lower()]
+
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
 
 
 class Baron(Minion, TroubleBrewing, Character, NonRecurringAction):
@@ -56,7 +60,7 @@ class Baron(Minion, TroubleBrewing, Character, NonRecurringAction):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Baron"
 
         self._role_enum = TBRole.baron
-        self._emoji = "<:tbbaron:781667108126851104>"
+        self._emoji = emojis["troublebrewing"]["baron"]
     
     def create_n1_instr_str(self):
         """Create the instruction field on the opening dm card"""
@@ -67,9 +71,7 @@ class Baron(Minion, TroubleBrewing, Character, NonRecurringAction):
         
         # Some characters have a line of addendum
         if addendum:
-            with open("botutils/bot_text.json") as json_file:
-                bot_text = json.load(json_file)
-                scroll_emoji = bot_text["esthetics"]["scroll"]
+            scroll_emoji = botutils.BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
             
         return msg

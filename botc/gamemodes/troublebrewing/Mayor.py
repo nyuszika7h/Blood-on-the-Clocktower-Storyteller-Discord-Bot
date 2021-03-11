@@ -4,9 +4,13 @@ import json
 import random
 from botc import BOTCUtils, Townsfolk, Character, NonRecurringAction, Category, Team, StatusList
 from ._utils import TroubleBrewing, TBRole
+import botutils
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
     character_text = json.load(json_file)[TBRole.mayor.value.lower()]
+
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
 
 
 class Mayor(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
@@ -52,7 +56,7 @@ class Mayor(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Mayor"
 
         self._role_enum = TBRole.mayor
-        self._emoji = "<:tbmayor:739317350544965663>"
+        self._emoji = emojis["troublebrewing"]["mayor"]
 
     def create_n1_instr_str(self):
         """Create the instruction field on the opening dm card"""
@@ -63,9 +67,7 @@ class Mayor(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         
         # Some characters have a line of addendum
         if addendum:
-            with open("botutils/bot_text.json") as json_file:
-                bot_text = json.load(json_file)
-                scroll_emoji = bot_text["esthetics"]["scroll"]
+            scroll_emoji = botutils.BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
             
         return msg

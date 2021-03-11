@@ -6,14 +6,14 @@ import configparser
 from botc import Action, ActionTypes, Townsfolk, Character, SafetyFromDemon, RecurringAction
 from botc.BOTCUtils import GameLogic
 from ._utils import TroubleBrewing, TBRole
+import botutils
 import globvars
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
     character_text = json.load(json_file)[TBRole.monk.value.lower()]
 
-with open('botutils/bot_text.json') as json_file:
-    bot_text = json.load(json_file)
-    butterfly = bot_text["esthetics"]["butterfly"]
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
 
 Config = configparser.ConfigParser()
 Config.read('config.INI')
@@ -63,7 +63,7 @@ class Monk(Townsfolk, TroubleBrewing, Character, RecurringAction):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Monk"
 
         self._role_enum = TBRole.monk
-        self._emoji = "<:tbmonk:739317350603423746>"
+        self._emoji = emojis["troublebrewing"]["monk"]
     
     def create_n1_instr_str(self):
         """Create the instruction field on the opening dm card"""
@@ -74,9 +74,7 @@ class Monk(Townsfolk, TroubleBrewing, Character, RecurringAction):
         
         # Some characters have a line of addendum
         if addendum:
-            with open("botutils/bot_text.json") as json_file:
-                bot_text = json.load(json_file)
-                scroll_emoji = bot_text["esthetics"]["scroll"]
+            scroll_emoji = botutils.BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
             
         return msg
@@ -108,7 +106,7 @@ class Monk(Townsfolk, TroubleBrewing, Character, RecurringAction):
         if DISABLE_DMS:
             return
 
-        msg = butterfly + " " + character_text["feedback"].format(targets[0].game_nametag)
+        msg = botutils.BotEmoji.butterfly + " " + character_text["feedback"].format(targets[0].game_nametag)
         await player.user.send(msg)
     
     async def exec_protect(self, monk_player, protected_player):

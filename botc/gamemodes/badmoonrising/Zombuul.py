@@ -7,6 +7,7 @@ import botutils
 from botc import Character, Demon, Townsfolk, Outsider, BOTCUtils, ActionTypes, \
     GameLogic, Action, StatusList, RecurringAction
 from ._utils import BadMoonRising, BMRRole
+import botutils
 import globvars
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
@@ -16,6 +17,9 @@ with open('botc/game_text.json') as json_file:
     strings = json.load(json_file)
     demon_bluff_str = strings["gameplay"]["demonbluffs"]
     action_assign = strings["gameplay"]["action_assign"]
+
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
 
 
 class Zombuul(Demon, BadMoonRising, Character, RecurringAction):
@@ -64,7 +68,7 @@ class Zombuul(Demon, BadMoonRising, Character, RecurringAction):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Zombuul"
 
         self._role_enum = BMRRole.zombuul
-        self._emoji = "<:bmrzombuul:781152054910517291>"
+        self._emoji = emojis["badmoonrising"]["zombuul"]
     
     def create_n1_instr_str(self):
         """Create the instruction field on the opening dm card"""
@@ -75,9 +79,7 @@ class Zombuul(Demon, BadMoonRising, Character, RecurringAction):
 
         # Some characters have a line of addendum
         if addendum:
-            with open("botutils/bot_text.json") as json_file:
-                bot_text = json.load(json_file)
-                scroll_emoji = bot_text["esthetics"]["scroll"]
+            scroll_emoji = botutils.BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
 
         # Seven or more players, send the evil list and three demon bluffs

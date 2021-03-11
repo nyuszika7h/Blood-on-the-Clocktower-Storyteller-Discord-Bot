@@ -35,9 +35,8 @@ with open('botc/game_text.json') as json_file:
     role_change = strings["gameplay"]["role_change"]
     copyrights_str = strings["misc"]["copyrights"]
 
-with open('botutils/bot_text.json') as json_file:
-    bot_text = json.load(json_file)
-    butterfly = bot_text["esthetics"]["butterfly"]
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
 
 
 class Imp(Demon, TroubleBrewing, Character, RecurringAction):
@@ -86,7 +85,7 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Imp"
 
         self._role_enum = TBRole.imp
-        self._emoji = "<:tbimp:739317350897025054>"
+        self._emoji = emojis["troublebrewing"]["imp"]
 
     def create_n1_instr_str(self):
         """Create the instruction field on the opening dm card"""
@@ -97,9 +96,7 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
 
         # Some characters have a line of addendum
         if addendum:
-            with open("botutils/bot_text.json") as json_file:
-                bot_text = json.load(json_file)
-                scroll_emoji = bot_text["esthetics"]["scroll"]
+            scroll_emoji = botutils.BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
 
         # Seven or more players, send the evil list and three demon bluffs
@@ -174,11 +171,11 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
 
         # Normal kill
         if player.user.id != targets[0].user.id:
-            msg = butterfly + " " + character_text["feedback"][0].format(targets[0].game_nametag)
+            msg = botutils.BotEmoji.butterfly + " " + character_text["feedback"][0].format(targets[0].game_nametag)
             await player.user.send(msg)
         # Starpass
         else:
-            msg = butterfly + " " + character_text["feedback"][1].format(targets[0].game_nametag)
+            msg = botutils.BotEmoji.butterfly + " " + character_text["feedback"][1].format(targets[0].game_nametag)
             await player.user.send(msg)
     
     async def exec_kill(self, demon_player, killed_player):

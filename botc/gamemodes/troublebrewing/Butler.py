@@ -13,13 +13,12 @@ import globvars
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
     character_text = json.load(json_file)[TBRole.butler.value.lower()]
 
-with open('botutils/bot_text.json') as json_file:
-    bot_text = json.load(json_file)
-    butterfly = bot_text["esthetics"]["butterfly"]
-
 with open('botc/game_text.json') as json_file: 
     documentation = json.load(json_file)
     action_assign = documentation["gameplay"]["action_assign"]
+
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
 
 Config = configparser.ConfigParser()
 Config.read('config.INI')
@@ -71,7 +70,7 @@ class Butler(Outsider, TroubleBrewing, Character, RecurringAction):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Butler"
 
         self._role_enum = TBRole.butler
-        self._emoji = "<:tbbutler:739317349248794685>"
+        self._emoji = emojis["troublebrewing"]["butler"]
 
     def create_n1_instr_str(self):
         """Create the instruction field on the opening dm card"""
@@ -92,7 +91,7 @@ class Butler(Outsider, TroubleBrewing, Character, RecurringAction):
 
         msg = self.action
         msg += globvars.master_state.game.create_sitting_order_stats_string()
-        embed_obj.add_field(name = butterfly + " **「 Your Action 」**", value = msg, inline = False)
+        embed_obj.add_field(name = botutils.BotEmoji.butterfly + " **「 Your Action 」**", value = msg, inline = False)
         return embed_obj
     
     def has_finished_night_action(self, player):

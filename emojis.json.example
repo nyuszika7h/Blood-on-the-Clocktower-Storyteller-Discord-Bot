@@ -47,5 +47,9 @@
     "mention" : "<:mention:744760572133900372>",
     "skull" : "💀",
     "fquit" : "❌",
-    "vote" : "🗳️"
+    "vote" : "🗳️",
+    "facebook": "<:facebook:796740874917773382>",
+    "youtube": "<:youtube:796741210554499143>",
+    "twitter": "<:twitter:796741229877919804>",
+    "reddit": "<:reddit:796741241974685756>"
 }

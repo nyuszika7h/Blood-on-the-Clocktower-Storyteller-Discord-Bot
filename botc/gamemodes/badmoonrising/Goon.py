@@ -7,6 +7,9 @@ from ._utils import BadMoonRising, BMRRole
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.goon.value.lower()]
 
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
+
 
 class Goon(Outsider, BadMoonRising, Character):
     """Goon: Each night, the 1st player to choose you with their ability is drunk until dusk. 
@@ -31,4 +34,4 @@ class Goon(Outsider, BadMoonRising, Character):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Goon"
 
         self._role_enum = BMRRole.goon
-        self._emoji = "<:bmrgoon:781151556330192966>"
+        self._emoji = emojis["badmoonrising"]["goon"]

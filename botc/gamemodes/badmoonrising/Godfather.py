@@ -7,6 +7,9 @@ from ._utils import BadMoonRising, BMRRole
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.godfather.value.lower()]
 
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
+
 
 class Godfather(Minion, BadMoonRising, Character):
     """Godfather: You start knowing which Outsiders are in-play. If 1 died today, 
@@ -31,4 +34,4 @@ class Godfather(Minion, BadMoonRising, Character):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Godfather"
 
         self._role_enum = BMRRole.godfather
-        self._emoji = "<:bmrgodfather:781151556204625930>"
+        self._emoji = emojis["badmoonrising"]["godfather"]

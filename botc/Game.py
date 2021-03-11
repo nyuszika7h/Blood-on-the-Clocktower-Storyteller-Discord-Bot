@@ -92,16 +92,11 @@ with open('botc/game_text.json') as json_file:
     ego_role_reveal_herring = strings["gameplay"]["ego_role_reveal_herring"]
     changed_role_reveal = strings["gameplay"]["changed_role_reveal"]
 
-with open('botutils/bot_text.json') as json_file:
-    language = json.load(json_file)
-    skull_unicode = language["esthetics"]["skull"]
-    fquit_unicode = language["esthetics"]["fquit"]
-
 
 class Setup:
     """A class to facilitate role to player access"""
 
-    DEMON_HEAD_EMOJI = "<:demonhead:736692927505367190>"
+    DEMON_HEAD_EMOJI = botutils.BotEmoji.demonhead
 
     def __init__(self):
 
@@ -321,11 +316,11 @@ class Game(GameMeta):
                 line = f"{player.user.display_name} ({player.user.id}) [alive]\n"
             elif player.is_dead():
                 if player.has_vote():
-                    line = f"{player.user.display_name} ({player.user.id}) [dead] {skull_unicode} {botutils.BotEmoji.vote}\n"
+                    line = f"{player.user.display_name} ({player.user.id}) [dead] {botutils.BotEmoji.skull} {botutils.BotEmoji.vote}\n"
                 else:
-                    line = f"{player.user.display_name} ({player.user.id}) [dead] {skull_unicode}\n"
+                    line = f"{player.user.display_name} ({player.user.id}) [dead] {botutils.BotEmoji.skull}\n"
             else:
-                line = f"{player.user.display_name} ({player.user.id}) [quit] {fquit_unicode}\n"
+                line = f"{player.user.display_name} ({player.user.id}) [quit] {botutils.BotEmoji.fquit}\n"
             msg += line
         msg += "```"
         return msg

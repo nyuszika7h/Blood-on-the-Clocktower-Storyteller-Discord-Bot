@@ -4,6 +4,7 @@ import discord
 import json
 import configparser
 from discord.ext import commands
+import botutils
 
 Config = configparser.ConfigParser()
 Config.read("preferences.INI")
@@ -19,7 +20,9 @@ with open('botc/game_text.json') as json_file:
     wiki = strings["misc"]["wiki"]
     rulebooks = strings["misc"]["rulebooks"]
     scripts = strings["misc"]["scripts"]
-    social_medias = strings["misc"]["social_medias"]
+    social_medias = strings["misc"]["social_medias"].format(
+        botutils.BotEmoji.facebook, botutils.BotEmoji.youtube, botutils.BotEmoji.twitter, botutils.BotEmoji.reddit
+    )
 
 
 class BOTCGeneralCommands(commands.Cog, name="BoTC Commands"):

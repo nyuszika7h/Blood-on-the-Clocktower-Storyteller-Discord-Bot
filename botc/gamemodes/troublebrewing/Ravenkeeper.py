@@ -9,19 +9,19 @@ from botc import Action, ActionTypes, Townsfolk, Character, NonRecurringAction, 
     RavenkeeperActivated, StatusList, BOTCUtils, Minion, Demon, Outsider
 from botc.BOTCUtils import GameLogic
 from ._utils import TroubleBrewing, TBRole
+import botutils
 import globvars
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
     character_text = json.load(json_file)[TBRole.ravenkeeper.value.lower()]
 
-with open('botutils/bot_text.json') as json_file:
-    bot_text = json.load(json_file)
-    butterfly = bot_text["esthetics"]["butterfly"]
-
 with open('botc/game_text.json') as json_file: 
     strings = json.load(json_file)
     copyrights_str = strings["misc"]["copyrights"]
     ravenkeeper_reply = strings["gameplay"]["ravenkeeper_reply"]
+
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
 
 Config = configparser.ConfigParser()
 Config.read('config.INI')
@@ -70,7 +70,7 @@ class Ravenkeeper(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Ravenkeeper"
         
         self._role_enum = TBRole.ravenkeeper
-        self._emoji = "<:tbravenkeeper:739317350913802360>"
+        self._emoji = emojis["troublebrewing"]["ravenkeeper"]
 
     def create_n1_instr_str(self):
         """Create the instruction field on the opening dm card"""
@@ -81,9 +81,7 @@ class Ravenkeeper(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         
         # Some characters have a line of addendum
         if addendum:
-            with open("botutils/bot_text.json") as json_file:
-                bot_text = json.load(json_file)
-                scroll_emoji = bot_text["esthetics"]["scroll"]
+            scroll_emoji = botutils.BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
             
         return msg
@@ -121,7 +119,7 @@ class Ravenkeeper(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
             msg2 = self.action
             msg2 += globvars.master_state.game.create_sitting_order_stats_string()
-            embed.add_field(name = butterfly + " **「 Your Action 」**", value = msg2, inline = False)
+            embed.add_field(name = botutils.BotEmoji.butterfly + " **「 Your Action 」**", value = msg2, inline = False)
             
             try:
                 await recipient.send(embed = embed)
@@ -187,7 +185,7 @@ class Ravenkeeper(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         if DISABLE_DMS:
             return
 
-        msg = butterfly + " " + character_text["feedback"].format(targets[0].game_nametag)
+        msg = botutils.BotEmoji.butterfly + " " + character_text["feedback"].format(targets[0].game_nametag)
         await player.user.send(msg)
     
     async def on_being_demon_killed(self, killed_player):

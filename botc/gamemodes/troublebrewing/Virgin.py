@@ -12,6 +12,9 @@ with open('botc/game_text.json') as json_file:
     documentation = json.load(json_file)
     immediately_executed = documentation["gameplay"]["immediately_executed"]
 
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
+
 
 class Virgin(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     """Virgin: The 1st time you are nominated, if the nominator is a Townsfolk, 
@@ -56,7 +59,7 @@ class Virgin(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Virgin"
 
         self._role_enum = TBRole.virgin
-        self._emoji = "<:tbvirgin:739317351173980201>"
+        self._emoji = emojis["troublebrewing"]["virgin"]
 
         self.inventory = Inventory(
             Flags.virgin_first_nomination,
@@ -72,9 +75,7 @@ class Virgin(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         
         # Some characters have a line of addendum
         if addendum:
-            with open("botutils/bot_text.json") as json_file:
-                bot_text = json.load(json_file)
-                scroll_emoji = bot_text["esthetics"]["scroll"]
+            scroll_emoji = botutils.BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
             
         return msg

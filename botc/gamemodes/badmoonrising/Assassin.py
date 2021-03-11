@@ -8,6 +8,9 @@ import globvars
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.assassin.value.lower()]
 
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
+
 
 class Assassin(Minion, BadMoonRising, Character):
     """Assassin: Once per game, at night*, choose a player: they die, even if for some reason they could not.
@@ -31,7 +34,7 @@ class Assassin(Minion, BadMoonRising, Character):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Assassin"
 
         self._role_enum = BMRRole.assassin
-        self._emoji = "<:bmrassassin:781151556665344010>"
+        self._emoji = emojis["badmoonrising"]["assassin"]
     
     def has_finished_night_action(self, player):
         """Return True if assassin has submitted the assassinate action"""

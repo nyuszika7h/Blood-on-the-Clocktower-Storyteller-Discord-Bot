@@ -6,14 +6,14 @@ import configparser
 from botc import Action, ActionTypes, Minion, Character, Poison, RecurringAction
 from botc.BOTCUtils import GameLogic
 from ._utils import TroubleBrewing, TBRole
+import botutils
 import globvars
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
     character_text = json.load(json_file)[TBRole.poisoner.value.lower()]
 
-with open('botutils/bot_text.json') as json_file:
-    bot_text = json.load(json_file)
-    butterfly = bot_text["esthetics"]["butterfly"]
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
 
 Config = configparser.ConfigParser()
 Config.read('config.INI')
@@ -66,7 +66,7 @@ class Poisoner(Minion, TroubleBrewing, Character, RecurringAction):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Poisoner"
 
         self._role_enum = TBRole.poisoner
-        self._emoji = "<:tbpoisoner:739317350758875206>"
+        self._emoji = emojis["troublebrewing"]["poisoner"]
 
     def create_n1_instr_str(self):
         """Create the instruction field on the opening dm card"""
@@ -77,9 +77,7 @@ class Poisoner(Minion, TroubleBrewing, Character, RecurringAction):
         
         # Some characters have a line of addendum
         if addendum:
-            with open("botutils/bot_text.json") as json_file:
-                bot_text = json.load(json_file)
-                scroll_emoji = bot_text["esthetics"]["scroll"]
+            scroll_emoji = botutils.BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
             
         return msg
@@ -89,7 +87,7 @@ class Poisoner(Minion, TroubleBrewing, Character, RecurringAction):
 
         msg = self.action
         msg += globvars.master_state.game.create_sitting_order_stats_string()
-        embed_obj.add_field(name = butterfly + " **「 Your Action 」**", value = msg, inline = False)
+        embed_obj.add_field(name = botutils.BotEmoji.butterfly + " **「 Your Action 」**", value = msg, inline = False)
         return embed_obj
     
     def has_finished_night_action(self, player):
@@ -113,7 +111,7 @@ class Poisoner(Minion, TroubleBrewing, Character, RecurringAction):
         if DISABLE_DMS:
             return
 
-        msg = butterfly + " " + character_text["feedback"].format(targets[0].game_nametag)
+        msg = botutils.BotEmoji.butterfly + " " + character_text["feedback"].format(targets[0].game_nametag)
         await player.user.send(msg)
 
     async def exec_poison(self, poisoner_player, poisoned_player):

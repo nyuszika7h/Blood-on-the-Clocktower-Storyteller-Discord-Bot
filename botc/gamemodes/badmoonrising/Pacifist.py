@@ -7,6 +7,9 @@ from ._utils import BadMoonRising, BMRRole
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.pacifist.value.lower()]
 
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
+
 
 class Pacifist(Townsfolk, BadMoonRising, Character):
     """Pacifist: Executed good players may not die.
@@ -30,4 +33,4 @@ class Pacifist(Townsfolk, BadMoonRising, Character):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Pacifist"
 
         self._role_enum = BMRRole.pacifist
-        self._emoji = "<:bmrpacifist:781152055091396648>"
+        self._emoji = emojis["badmoonrising"]["pacifist"]

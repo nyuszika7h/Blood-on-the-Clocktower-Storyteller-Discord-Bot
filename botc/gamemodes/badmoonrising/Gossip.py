@@ -7,6 +7,9 @@ from ._utils import BadMoonRising, BMRRole
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.gossip.value.lower()]
 
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
+
 
 class Gossip(Townsfolk, BadMoonRising, Character):
     """Gossip: Each day, you may make a public statement. Tonight, if it was true, a player dies.
@@ -30,5 +33,5 @@ class Gossip(Townsfolk, BadMoonRising, Character):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Gossip"
 
         self._role_enum = BMRRole.gossip
-        self._emoji = "<:bmrgossip:781151556409098240>"
+        self._emoji = emojis["badmoonrising"]["gossip"]
         

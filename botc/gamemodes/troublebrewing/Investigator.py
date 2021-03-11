@@ -8,6 +8,7 @@ import configparser
 from botc import Townsfolk, Character, Category, NonRecurringAction, BOTCUtils, \
     Minion
 from ._utils import TroubleBrewing, TBRole
+import botutils
 import globvars
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
@@ -17,6 +18,9 @@ with open('botc/game_text.json') as json_file:
     strings = json.load(json_file)
     investigator_init = strings["gameplay"]["investigator_init"]
     copyrights_str = strings["misc"]["copyrights"]
+
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
 
 Config = configparser.ConfigParser()
 Config.read('config.INI')
@@ -66,7 +70,7 @@ class Investigator(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Investigator"
 
         self._role_enum = TBRole.investigator
-        self._emoji = "<:tbinvestigator:739317350695698492>"
+        self._emoji = emojis["troublebrewing"]["investigator"]
 
     def create_n1_instr_str(self):
         """Create the instruction field on the opening dm card"""
@@ -77,9 +81,7 @@ class Investigator(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         
         # Some characters have a line of addendum
         if addendum:
-            with open("botutils/bot_text.json") as json_file:
-                bot_text = json.load(json_file)
-                scroll_emoji = bot_text["esthetics"]["scroll"]
+            scroll_emoji = botutils.BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
             
         return msg

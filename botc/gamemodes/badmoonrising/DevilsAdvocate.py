@@ -7,6 +7,9 @@ from ._utils import BadMoonRising, BMRRole
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.devilsadvocate.value.lower()]
 
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
+
 
 class DevilsAdvocate(Minion, BadMoonRising, Character):
     """Devil's Advocate: Each night, choose a living player (not the same as last night): 
@@ -31,4 +34,4 @@ class DevilsAdvocate(Minion, BadMoonRising, Character):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Devil%27s_Advocate"
 
         self._role_enum = BMRRole.devilsadvocate
-        self._emoji = "<:bmrdevilsadvocate:781151556493639680>"
+        self._emoji = emojis["badmoonrising"]["devilsadvocate"]

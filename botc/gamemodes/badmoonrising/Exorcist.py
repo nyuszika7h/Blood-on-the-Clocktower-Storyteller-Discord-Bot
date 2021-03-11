@@ -7,6 +7,9 @@ from ._utils import BadMoonRising, BMRRole
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.exorcist.value.lower()]
 
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
+
 
 class Exorcist(Townsfolk, BadMoonRising, Character):
     """Exorcist: Each night*, choose a player (not the same as last night): the Demon, if chosen, 
@@ -31,5 +34,5 @@ class Exorcist(Townsfolk, BadMoonRising, Character):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Exorcist"
 
         self._role_enum = BMRRole.exorcist
-        self._emoji = "<:bmrexorcist:781151556442521620>"
+        self._emoji = emojis["badmoonrising"]["exorcist"]
         
