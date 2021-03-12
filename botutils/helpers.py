@@ -100,4 +100,8 @@ def get_emoji(s):
     if s in emoji.UNICODE_EMOJI['en']:
         return s
     else:
-        return globvars.client.get_emoji(int(re.split(r'[<:>]', s)[-2]))
+        em = globvars.client.get_emoji(int(re.split(r'[<:>]', s)[-2]))
+        if em:
+            return str(em)
+        else:
+            return None
