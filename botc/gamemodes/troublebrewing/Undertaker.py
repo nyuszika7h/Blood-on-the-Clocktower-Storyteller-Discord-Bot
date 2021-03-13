@@ -16,7 +16,6 @@ with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
 with open('botc/game_text.json') as json_file: 
     strings = json.load(json_file)
     undertaker_nightly = strings["gameplay"]["undertaker_nightly"]
-    undertaker_none = strings["gameplay"]["undertaker_none"]
     copyrights_str = strings["misc"]["copyrights"]
 
 with open('botc/emojis.json') as json_file:
@@ -154,10 +153,10 @@ class Undertaker(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         msg += self.emoji + " " + self.instruction
         msg += "\n"
 
-        if character_of_executed:
-            msg += undertaker_nightly.format(character_of_executed.name)
-        else:
-            msg += undertaker_none
+        if not character_of_executed:
+            return
+
+        msg += undertaker_nightly.format(character_of_executed.name)
 
         embed = discord.Embed(description = msg)
 
