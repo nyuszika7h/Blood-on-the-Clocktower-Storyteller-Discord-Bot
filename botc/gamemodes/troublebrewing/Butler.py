@@ -117,7 +117,7 @@ class Butler(Outsider, TroubleBrewing, Character, RecurringAction):
         if DISABLE_DMS:
             return
 
-        msg = butterfly + " " + character_text["feedback"].format(targets[0].game_nametag)
+        msg = botutils.BotEmoji.butterfly + " " + character_text["feedback"].format(targets[0].game_nametag)
         await player.user.send(msg)
     
     async def exec_serve(self, butler_player, master_player):
