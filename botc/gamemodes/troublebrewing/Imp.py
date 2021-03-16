@@ -191,6 +191,12 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
     async def _starpass(self, demon_player):
         """Starpassing ability works when the demon is killed by himself at night"""
         
+        # If imp starpasses to poisoner, the poisoned player should be no longer poisoned
+        for player in globvars.master_state.game.sitting_order:
+            for status in player.status_effects:
+                if status.effect == StatusList.poison:
+                    status.manually_disable()
+
         # If 5 or more players alive (not counting travelers), scarlet woman has priority 
         # over the promotion to demonhood
         if globvars.master_state.game.nb_alive_players >= 5:
