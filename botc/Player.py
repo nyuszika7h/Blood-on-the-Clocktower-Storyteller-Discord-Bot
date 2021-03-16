@@ -1,6 +1,7 @@
 """Contains the Player class"""
 
 import botutils
+from botc.status import StatusList
 from .PlayerState import PlayerState
 from .abilities import ActionGrid
 from .errors import AlreadyDead
@@ -63,6 +64,11 @@ class Player:
         self._apparent_state_obj = PlayerState.dead
         await botutils.add_dead_role(self.user)
         await botutils.remove_alive_role(self.user)
+        if self.role.true_self.name == "Poisoner":
+            for player in globvars.master_state.game.sitting_order:
+                for status in player.status_effects:
+                    if status.effect == StatusList.poison:
+                        status.manually_disable()
         await globvars.master_state.game.check_winning_conditions()
     
     async def exec_apparent_death(self):
