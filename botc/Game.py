@@ -576,7 +576,7 @@ class Game(GameMeta):
                     # The player is a minion who became imp
                     elif player.old_role is not None:
                         short = changed_role_reveal.format(
-                           botutils.BotEmoji.trophy_animated if player.role.true_self.is_good() else "---",
+                           "",
                            player.user.mention,
                            player.role.true_self.emoji,
                            player.role.true_self.name,
