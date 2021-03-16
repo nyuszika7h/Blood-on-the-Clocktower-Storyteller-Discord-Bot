@@ -96,18 +96,18 @@ class Mayor(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
                         # Star passing is possible. Demon can be a bounce target!
                         possibilities = [player for player in globvars.master_state.game.sitting_order \
                         if player.is_alive() and \
-                            player.user.id != killed_player.user.id and \
-                            not player.has_status_effect(StatusList.safety_from_demon)]
+                            player.user.id != killed_player.user.id]
                     else:
                         # Star passing is impossible. Demon cannot be a bounce target.
                         possibilities = [player for player in globvars.master_state.game.sitting_order \
                             if player.is_alive() and \
                                 player.role.category != Category.demon and \
-                                player.user.id != killed_player.user.id and \
-                                not player.has_status_effect(StatusList.safety_from_demon)]
+                                player.user.id != killed_player.user.id]
 
                     if possibilities:
                         deflected_to = random.choice(possibilities)
+                        if deflected_to.has_status_effect(StatusList.safety_from_demon):
+                            return
                         await deflected_to.role.true_self.on_being_demon_killed(deflected_to)
                         
                     # All the surviving players cannot die from demon, the mayor must die.
